@@ -3,8 +3,6 @@ import json
 import re
 from collections import Counter, defaultdict
 
-from openai import AsyncOpenAI
-
 from ._llm import gpt_4o_complete
 from ._utils import (
     logger,
@@ -28,6 +26,18 @@ from .base import (
     QueryParam,
 )
 from .prompt import GRAPH_FIELD_SEP, PROMPTS
+
+
+def strip_markdown_json(text: str) -> str:
+    """Strip markdown code blocks from JSON responses"""
+    text = text.strip()
+    if text.startswith("```json"):
+        text = text[7:]  # Remove ```json
+    elif text.startswith("```"):
+        text = text[3:]  # Remove ```
+    if text.endswith("```"):
+        text = text[:-3]  # Remove trailing ```
+    return text.strip()
 
 
 def chunking_by_token_size(
@@ -437,7 +447,20 @@ async def generate_community_report(
         )
         prompt = community_report_prompt.format(input_text=describe)
         response = await use_llm_func(prompt, **llm_extra_kwargs)
-        data = json.loads(response)
+        try:
+            # Strip markdown code blocks if present
+            cleaned_response = strip_markdown_json(response)
+            data = json.loads(cleaned_response)
+        except json.JSONDecodeError:
+            # Gemini safety filters or empty response - provide a default structure
+            logger.warning(f"Failed to parse JSON response for community report, using default structure. Response was: {response[:200]}")
+            data = {
+                "title": "Community Report",
+                "summary": "Unable to generate summary due to API response format",
+                "rating": 5,
+                "rating_explanation": "Default rating",
+                "findings": []
+            }
         already_processed += 1
         print(f"Processed {already_processed} communities\r", end="", flush=True)
         return data
@@ -754,7 +777,9 @@ async def _map_global_communities(
             system_prompt=sys_prompt,
             **query_param.global_special_community_map_llm_kwargs,
         )
-        response = json.loads(response)
+        # Strip markdown code blocks if present
+        cleaned_response = strip_markdown_json(response)
+        response = json.loads(cleaned_response)
         return response.get("points", [])
 
     logger.info(f"Grouping to {len(community_groups)} groups for global search")

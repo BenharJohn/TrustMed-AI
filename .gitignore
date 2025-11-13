@@ -1,17 +1,100 @@
+# Environment and API Keys
+.env
+.env.local
+.env.*.local
+
+# Text files (except requirements and documentation)
 *.txt
+!requirements*.txt
+!README.txt
+
+# Datasets
 dataset
 dataset_paper
 dataset_test
+dataset_ex/
 test*
+MedicalBook.xlsx
+
+# Docker
 .dockerignore
 app.sh
 
 ### Python template
 # Byte-compiled / optimized / DLL files
-__pycache__
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
-# ignore special files or folds
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Neo4j Database Files
+neo4j_data/
+*.db
+
+# Vector Database Files
+milvus_data/
+*.index
+*.ivf
+
+# Model Checkpoints and Large Files
+checkpoints/embeddings/
+checkpoints/models/
+*.pt
+*.pth
+*.safetensors
+*.bin
+
+# Logs
+*.log
+logs/
+nanotest/
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# OS Files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Keep checkpoint metadata but not large files
+!checkpoints/metadata/
+!checkpoints/config/
+!checkpoints/.gitkeep
+!checkpoints/README.mdnul

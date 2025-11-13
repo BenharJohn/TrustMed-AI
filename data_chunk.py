@@ -1,5 +1,4 @@
-from langchain.output_parsers.openai_tools import JsonOutputToolsParser
-from langchain_community.chat_models import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 from langchain.chains import create_extraction_chain
@@ -20,14 +19,14 @@ def get_propositions(text, runnable, extraction_chain):
     runnable_output = runnable.invoke({
     	"input": text
     }).content
-    
+
     propositions = extraction_chain.run(runnable_output)[0].sentences
     return propositions
 
 def run_chunk(essay):
 
     obj = hub.pull("wfh/proposal-indexing")
-    llm = ChatOpenAI(model='gpt-4-1106-preview', openai_api_key = os.getenv("OPENAI_API_KEY"))
+    llm = ChatGoogleGenerativeAI(model='gemini-1.5-pro', google_api_key=os.getenv("GOOGLE_API_KEY"))
 
     runnable = obj | llm
 

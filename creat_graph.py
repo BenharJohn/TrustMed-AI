@@ -5,7 +5,6 @@ from camel.agents import KnowledgeGraphAgent
 from camel.loaders import UnstructuredIO
 from dataloader import load_high
 import argparse
-from data_chunk import run_chunk
 from utils import *
 
 
@@ -17,6 +16,8 @@ def creat_metagraph(args, content, gid, n4j):
     whole_chunk = content
 
     if args.grained_chunk == True:
+        # Import only when needed to avoid dependency issues
+        from data_chunk import run_chunk
         content = run_chunk(content)
     else:
         content = [content]

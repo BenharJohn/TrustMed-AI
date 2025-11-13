@@ -1,11 +1,10 @@
-from openai import OpenAI
+import google.generativeai as genai
 import os
 from neo4j import GraphDatabase
 import numpy as np
 from camel.storages import Neo4jGraph
 import uuid
 from summerize import process_chunks
-import openai
 
 sys_prompt_one = """
 Please answer the question using insights supported by provided graph-based data relevant to medical information.
@@ -15,21 +14,17 @@ sys_prompt_two = """
 Modify the response to the question using the provided references. Include precise citations relevant to your answer. You may use multiple citations simultaneously, denoting each with the reference index number. For example, cite the first and third documents as [1][3]. If the references do not pertain to the response, simply provide a concise answer to the original question.
 """
 
-# Add your own OpenAI API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# Configure Gemini API
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-def get_embedding(text, mod = "text-embedding-3-small"):
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        base_url=os.getenv("OPENAI_API_BASE_URL")
+def get_embedding(text, mod = "models/embedding-001"):
+    # Use Gemini embedding model
+    result = genai.embed_content(
+        model=mod,
+        content=text,
+        task_type="retrieval_document"
     )
-
-    response = client.embeddings.create(
-        input=text,
-        model=mod
-    )
-
-    return response.data[0].embedding
+    return result['embedding']
 
 def fetch_texts(n4j):
     # Fetch the text for each node
@@ -83,22 +78,26 @@ def add_sum(n4j,content,gid):
     return s
 
 def call_llm(sys, user):
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        base_url=os.getenv("OPENAI_API_BASE_URL")
+    # Use Gemini Flash model for chat completion (higher rate limits)
+    model = genai.GenerativeModel('models/gemini-flash-latest')
+
+    # Combine system and user messages for Gemini
+    prompt = f"{sys}\n\nUser: {user}"
+
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.types.GenerationConfig(
+            max_output_tokens=500,
+            temperature=0.5,
+        )
     )
-    response = client.chat.completions.create(
-        model="gpt-4-1106-preview",
-        messages=[
-            {"role": "system", "content": sys},
-            {"role": "user", "content": f" {user}"},
-        ],
-        max_tokens=500,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    return response.choices[0].message.content
+
+    # Handle blocked responses
+    try:
+        return response.text
+    except ValueError:
+        # If response was blocked, return a placeholder
+        return "Response blocked by safety filters. Please rephrase your query."
 
 def find_index_of_largest(nums):
     # Sorting the list while keeping track of the original indexes

@@ -1,11 +1,9 @@
-import openai
-from openai import OpenAI
+import google.generativeai as genai
 from concurrent.futures import ThreadPoolExecutor
-import tiktoken
 import os
 
-# Add your own OpenAI API key
-openai_api_key = os.getenv("OPENAI_API_KEY")
+# Configure Gemini API
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 sum_prompt = """
 Generate a structured summary from the provided medical source (report, paper, or book), strictly adhering to the following categories. The summary should list key information under each category in a concise format: 'CATEGORY_NAME: Key information'. No additional explanations or detailed descriptions are necessary unless directly related to the categories:
@@ -32,38 +30,51 @@ SUBSTANCE_ABUSE: Note any substance abuse mentioned.
 Each category should be addressed only if relevant to the content of the medical source. Ensure the summary is clear and direct, suitable for quick reference.
 """
 
-def call_openai_api(chunk):
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY"),
-        base_url=os.getenv("OPENAI_API_BASE_URL")
-    )
-    response = client.chat.completions.create(
-        model="gpt-4-1106-preview",
-        messages=[
-            {"role": "system", "content": sum_prompt},
-            {"role": "user", "content": f" {chunk}"},
-        ],
-        max_tokens=500,
-        n=1,
-        stop=None,
-        temperature=0.5,
-    )
-    return response.choices[0].message.content
+def call_gemini_api(chunk):
+    # Use Gemini model for summarization
+    model = genai.GenerativeModel('models/gemini-flash-latest')
 
-def split_into_chunks(text, tokens=500):
-    encoding = tiktoken.encoding_for_model('gpt-4-1106-preview')
-    words = encoding.encode(text)
+    # Combine system and user messages for Gemini
+    prompt = f"{sum_prompt}\n\nUser: {chunk}"
+
+    response = model.generate_content(
+        prompt,
+        generation_config=genai.types.GenerationConfig(
+            max_output_tokens=500,
+            temperature=0.5,
+        )
+    )
+    return response.text
+
+def split_into_chunks(text, max_chars=2000):
+    # Simple character-based chunking for Gemini
+    # Gemini doesn't use tiktoken, so we'll use character count
     chunks = []
-    for i in range(0, len(words), tokens):
-        chunks.append(' '.join(encoding.decode(words[i:i + tokens])))
-    return chunks   
+    words = text.split()
+    current_chunk = []
+    current_length = 0
+
+    for word in words:
+        word_length = len(word) + 1  # +1 for space
+        if current_length + word_length > max_chars:
+            chunks.append(' '.join(current_chunk))
+            current_chunk = [word]
+            current_length = word_length
+        else:
+            current_chunk.append(word)
+            current_length += word_length
+
+    if current_chunk:
+        chunks.append(' '.join(current_chunk))
+
+    return chunks
 
 def process_chunks(content):
     chunks = split_into_chunks(content)
 
     # Processes chunks in parallel
     with ThreadPoolExecutor() as executor:
-        responses = list(executor.map(call_openai_api, chunks))
+        responses = list(executor.map(call_gemini_api, chunks))
     # print(responses)
     return responses
 
