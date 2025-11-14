@@ -55,19 +55,70 @@ st.markdown("""
         font-family: var(--font-family);
     }
 
+    /* Loading screen */
+    #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    #loading-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .loader {
+        width: 50px;
+        height: 50px;
+        border: 3px solid var(--border-color);
+        border-top: 3px solid var(--text-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+        margin-top: 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 0.6; }
+        50% { opacity: 1; }
+    }
+
     /* Hide Streamlit elements */
     #MainMenu, footer, header {visibility: hidden;}
 
     /* Remove default padding */
     .main .block-container {
         padding: 0;
-        max-width: 350px !important;
+        max-width: min(90%, 1200px) !important;
+        width: 100%;
         min-height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         margin: 0 auto;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
     }
 
     /* Remove Streamlit element spacing */
@@ -93,8 +144,9 @@ st.markdown("""
         visibility: visible !important;
         opacity: 1 !important;
         transform: none !important;
-        min-width: 250px !important;
-        max-width: 350px !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
     }
 
     [data-testid="stSidebar"] > div:first-child {
@@ -129,6 +181,32 @@ st.markdown("""
     [data-testid="stSidebar"] .stMetric label,
     [data-testid="stSidebar"] .stMetric [data-testid="stMetricValue"] {
         color: var(--text-primary) !important;
+    }
+
+    /* Fix selectbox (dropdown) text visibility */
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] {
+        background-color: #2c2c2c !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] > div {
+        color: white !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox [data-baseweb="select"] div[data-baseweb="select"] > div {
+        color: white !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox [role="button"] {
+        color: white !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox [role="button"] > div {
+        color: white !important;
+    }
+
+    [data-testid="stSidebar"] .stSelectbox option {
+        background-color: #2c2c2c !important;
+        color: white !important;
     }
 
     /* Style Streamlit's built-in collapse button to be more visible */
@@ -166,8 +244,9 @@ st.markdown("""
         left: 50%;
         transform: translate(-50%, -50%);
         width: 100%;
-        max-width: 350px;
+        max-width: min(90%, 1000px);
         text-align: center;
+        padding: 0 1rem;
     }
 
     .welcome-title {
@@ -219,9 +298,10 @@ st.markdown("""
         bottom: 2rem;
         left: 50%;
         transform: translateX(-50%);
-        width: 350px !important;
-        max-width: 350px !important;
+        width: min(90%, 1000px) !important;
+        max-width: 1000px !important;
         z-index: 1000;
+        padding: 0 1rem;
     }
 
     .input-box {
@@ -297,8 +377,9 @@ st.markdown("""
 
     /* Chat container */
     .chat-area {
-        max-width: 350px !important;
+        max-width: min(90%, 1000px) !important;
         width: 100%;
+        padding: 0 1rem;
         margin: 0 auto;
         padding: 2rem 1rem 8rem 1rem;
     }
@@ -411,8 +492,99 @@ st.markdown("""
     .graph-info-item .icon {
         color: #1a73e8;
     }
+
+    /* Responsive breakpoints */
+    @media (max-width: 768px) {
+        /* Tablet adjustments */
+        .main .block-container {
+            max-width: 95% !important;
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+
+        .welcome-container {
+            max-width: 95%;
+            padding: 0 0.5rem;
+        }
+
+        .welcome-title {
+            font-size: 1.75rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.9375rem;
+        }
+
+        .input-wrapper {
+            width: 95% !important;
+            padding: 0 0.5rem;
+            bottom: 1.5rem;
+        }
+
+        .chat-area {
+            max-width: 95% !important;
+            padding: 0 0.5rem;
+        }
+
+        .suggestion-pill {
+            font-size: 0.8125rem;
+            padding: 0.5rem 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        /* Mobile adjustments */
+        .main .block-container {
+            max-width: 100% !important;
+            padding-left: 0.25rem !important;
+            padding-right: 0.25rem !important;
+        }
+
+        .welcome-container {
+            max-width: 100%;
+            padding: 0 0.25rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.875rem;
+        }
+
+        .input-wrapper {
+            width: 100% !important;
+            padding: 0 0.25rem;
+            bottom: 1rem;
+        }
+
+        .chat-area {
+            max-width: 100% !important;
+            padding: 0 0.25rem;
+        }
+
+        .suggestion-pill {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.875rem;
+        }
+
+        .message-content {
+            font-size: 0.9375rem;
+            padding: 0.875rem 1rem;
+        }
+
+        /* Adjust sidebar for mobile if needed */
+        [data-testid="stSidebar"] {
+            width: 240px !important;
+            min-width: 240px !important;
+            max-width: 240px !important;
+        }
+    }
 </style>
 """, unsafe_allow_html=True)
+
+# Loading screen removed - JavaScript not working in Streamlit iframe environment
 
 # Initialize session state for chat history
 if 'messages' not in st.session_state:

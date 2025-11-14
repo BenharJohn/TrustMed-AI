@@ -97,4 +97,15 @@ desktop.ini
 !checkpoints/metadata/
 !checkpoints/config/
 !checkpoints/.gitkeep
-!checkpoints/README.mdnul
+
+# Deleted unwanted files patterns
+*_gemini.py
+*_openai.py
+nano_graphrag/
+START_HERE.md
+QUICK_START*.md
+THREE_LAYER_SETUP.md
+OFFICIAL_SYSTEM_SETUP.md
+README_OFFICIAL_SYSTEM.md
+VERIFICATION_CHECKLIST.md
+TEST_RESULTS.md
