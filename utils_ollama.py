@@ -6,6 +6,7 @@ get_response function using Ollama for answer generation
 from creat_graph_ollama import call_ollama
 from contraindication_checker import check_contraindications, format_contraindication_rules
 from citation_formatter import CitationTracker
+from krt_diabetes_knowledge import format_top_qa_text
 import re
 
 
@@ -211,6 +212,22 @@ def link_context_ollama(n4j, gid):
     
     return context
 
+
+def inject_krt_diabetes_context(context_list):
+    """
+    Inject curated Type 2 Diabetes Q&A as reference knowledge (KRT approach).
+
+    This adds authoritative diabetes information to provide the model with
+    evidence-based answers on risk factors, prevention, and management.
+    """
+    krt_text = format_top_qa_text()
+    context_list.insert(0, "=" * 70)
+    context_list.insert(1, "** REFERENCE: CURATED TYPE 2 DIABETES KNOWLEDGE (KRT) **")
+    context_list.insert(2, krt_text)
+    context_list.insert(3, "=" * 70)
+    context_list.insert(4, "")
+
+
 def get_response_ollama(n4j, gid, question, model="llama3"):
     """
     Official get_response: Generate answer using context from matched GID
@@ -261,6 +278,10 @@ def get_response_ollama(n4j, gid, question, model="llama3"):
         self_context.insert(2, rule_text)
         self_context.insert(3, "=" * 70)
         self_context.insert(4, "")
+
+    # Inject curated Type 2 Diabetes Q&A as reference knowledge (KRT approach)
+    inject_krt_diabetes_context(self_context)
+    print(f"[KRT] Injected curated Type 2 Diabetes knowledge into context")
 
     # Get linked context from cross-layer references
     linked_context = link_context_ollama(n4j, gid)
