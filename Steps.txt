@@ -1,0 +1,58 @@
+
+C:\Users\benha\anaconda3\Lib\site-packages\streamlit\util.py:227: RuntimeWarning: coroutine 'expire_cache' was never awaited
+  pass
+RuntimeWarning: Enable tracemalloc to get the object allocation traceback
+
+[Vector Retrieval] Using embedding-based search...
+[Vector Setup] Checking for Summary node embeddings...
+  [OK] All Summary nodes have embeddings
+
+[Step 1] Generating question embedding...
+  [OK] Question embedding generated (dimension: 768)
+
+[Step 2] Computing cosine similarity with all Summary nodes...
+  [OK] Found 2 candidates:
+    [1] GID d3ab7441... - Similarity: 0.4845
+        Preview: Here is a summary of the medical text in 2-3 sentences:
+
+The guidelines outline ...
+    [2] GID a696c3c9... - Similarity: 0.3939
+        Preview: Here is a summary of the medical text in 2-3 sentences:
+
+Cardiac arrest is a lif...
+
+[Step 3] Re-ranking top 2 candidates with LLM...
+  [1] GID d3ab7441... - LLM Rating: 4/10
+  [2] GID a696c3c9... - LLM Rating: 1/10
+
+[Result] Best match after re-ranking: GID d3ab7441... (rating: 4/10)
+[Performance] Total time: 33.76s with 3 LLM calls
+[Speedup] ~20x faster than sequential comparison!
+
+[Response Generation] Retrieving context from GID d3ab7441...
+
+[CONTRA-CHECK] Checking for contraindications...
+[CONTRA-CHECK] Drugs mentioned: ['diclofenac', 'ibuprofen', 'indomethacin', 'ketorolac', 'naproxen']
+Received notification from DBMS server: <GqlStatusObject gql_status='01N50', status_description='warn: label does not exist. The label `Condition` does not exist in database `neo4j`. Verify that the spelling is correct.', position=<SummaryInputPosition line=4, column=25, offset=80>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 80, 'line': 4, 'column': 25}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "\n    MATCH (n)\n    WHERE n.gid = $gid AND NOT n:Summary\n    AND (n:Disease OR n:Condition OR 'Disease' IN labels(n))\n    RETURN DISTINCT toLower(n.id) AS disease_name, toLower(n.name) AS alt_name\n    "
+[CONTRA-CHECK] Patient conditions: ['renal disease', 'kidney failure', 'chronic kidney disease', 'acute myocardial infarction', 'ckd']
+Received notification from DBMS server: <GqlStatusObject gql_status='01N50', status_description='warn: label does not exist. The label `Drug` does not exist in database `neo4j`. Verify that the spelling is correct.', position=<SummaryInputPosition line=3, column=14, offset=37>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 37, 'line': 3, 'column': 14}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "\n    MATCH (d)-[r]->(c)\n    WHERE (d:Drug OR d:Medication OR 'Medication' IN labels(d) OR 'Drug' IN labels(d))\n      AND (c:Disease OR c:Condition OR 'Disease' IN labels(c) OR 'Condition' IN labels(c))\n      AND type(r) IN ['CONTRAINDICATED_IN', 'WORSENS', 'INTERACTS_WITH']\n      AND (toLower(d.id) IN $drug_aliases OR toLower(d.name) IN $drug_aliases)\n      AND (toLower(c.id) IN $condition_aliases OR toLower(c.name) IN $condition_aliases)\n    RETURN d.id AS drug, d.name AS drug_name,\n           c.id AS condition, c.name AS condition_name,\n           type(r) AS rule_type\n    "
+Received notification from DBMS server: <GqlStatusObject gql_status='01N50', status_description='warn: label does not exist. The label `Condition` does not exist in database `neo4j`. Verify that the spelling is correct.', position=<SummaryInputPosition line=4, column=27, offset=137>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 137, 'line': 4, 'column': 27}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "\n    MATCH (d)-[r]->(c)\n    WHERE (d:Drug OR d:Medication OR 'Medication' IN labels(d) OR 'Drug' IN labels(d))\n      AND (c:Disease OR c:Condition OR 'Disease' IN labels(c) OR 'Condition' IN labels(c))\n      AND type(r) IN ['CONTRAINDICATED_IN', 'WORSENS', 'INTERACTS_WITH']\n      AND (toLower(d.id) IN $drug_aliases OR toLower(d.name) IN $drug_aliases)\n      AND (toLower(c.id) IN $condition_aliases OR toLower(c.name) IN $condition_aliases)\n    RETURN d.id AS drug, d.name AS drug_name,\n           c.id AS condition, c.name AS condition_name,\n           type(r) AS rule_type\n    "
+[CONTRA-CHECK] Found 2 contraindication rules
+  - Ibuprofen CONTRAINDICATED_IN Chronic Kidney Disease
+  - Naproxen CONTRAINDICATED_IN Chronic Kidney Disease
+Received notification from DBMS server: <GqlStatusObject gql_status='01N50', status_description='warn: label does not exist. The label `Condition` does not exist in database `neo4j`. Verify that the spelling is correct.', position=<SummaryInputPosition line=4, column=25, offset=80>, raw_classification='UNRECOGNIZED', classification=<NotificationClassification.UNRECOGNIZED: 'UNRECOGNIZED'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'UNRECOGNIZED', '_severity': 'WARNING', '_position': {'offset': 80, 'line': 4, 'column': 25}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: "\n    MATCH (n)\n    WHERE n.gid = $gid AND NOT n:Summary\n    AND (n:Disease OR n:Condition OR 'Disease' IN labels(n))\n    RETURN DISTINCT n.id AS disease_name, n.name AS alt_name\n    "
+Received notification from DBMS server: <GqlStatusObject gql_status='01N01', status_description='warn: feature deprecated with replacement. id is deprecated. It is replaced by elementId or consider using an application-generated id.', position=<SummaryInputPosition line=11, column=11, offset=273>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 273, 'line': 11, 'column': 11}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: '\n    // Match all nodes with specific gid (not Summary)\n    MATCH (n)\n    WHERE n.gid = $gid AND NOT n:Summary\n    WITH collect(n) AS nodes\n\n    // Get relationships between nodes in this subgraph\n    UNWIND nodes AS n\n    UNWIND nodes AS m\n    MATCH (n)-[r]-(m)\n    WHERE id(n) < id(m)  // Avoid duplicates\n\n    RETURN n.id AS source, type(r) AS rel_type, m.id AS target\n    LIMIT 100\n    '
+Received notification from DBMS server: <GqlStatusObject gql_status='01N01', status_description='warn: feature deprecated with replacement. id is deprecated. It is replaced by elementId or consider using an application-generated id.', position=<SummaryInputPosition line=11, column=19, offset=281>, raw_classification='DEPRECATION', classification=<NotificationClassification.DEPRECATION: 'DEPRECATION'>, raw_severity='WARNING', severity=<NotificationSeverity.WARNING: 'WARNING'>, diagnostic_record={'_classification': 'DEPRECATION', '_severity': 'WARNING', '_position': {'offset': 281, 'line': 11, 'column': 19}, 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}> for query: '\n    // Match all nodes with specific gid (not Summary)\n    MATCH (n)\n    WHERE n.gid = $gid AND NOT n:Summary\n    WITH collect(n) AS nodes\n\n    // Get relationships between nodes in this subgraph\n    UNWIND nodes AS n\n    UNWIND nodes AS m\n    MATCH (n)-[r]-(m)\n    WHERE id(n) < id(m)  // Avoid duplicates\n\n    RETURN n.id AS source, type(r) AS rel_type, m.id AS target\n    LIMIT 100\n    '
+[Context] Retrieved 18 relationships from matched subgraph
+[Source] MedC-K - cardiac_guidelines.txt
+[Citation] Added source [1]
+[SAFETY] 2 contraindication rules found - injecting into context
+[Linked Context] Retrieved 0 cross-layer relationships
+
+[Pass 1] Generating patient-aware answer...
+[Pass 2] Refining answer with cross-layer context...
+
+[SAFETYGATE] Validating response for contraindication compliance...
+[SAFETYGATE] WARNING: LLM did not start with WARNING - enforcing template
+[Complete] Answer generated successfully with 1 citation(s)
+
