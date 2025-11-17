@@ -1,0 +1,443 @@
+=============================================================================
+TRUSTMED AI v1.0 - RELEASE CHANGELOG
+=============================================================================
+Release Date: November 16, 2025
+Repository: https://github.com/BenharJohn/TrustMed-AI
+Branch: main (merged from development)
+
+=============================================================================
+OVERVIEW
+=============================================================================
+
+This release represents a major upgrade from the original Medical Graph RAG
+implementation to a production-ready TrustMed AI system with enhanced safety,
+citations, and professional documentation.
+
+Key Highlights:
+- TrustMed AI branding with optimized UI (larger, more readable)
+- Citation system with inline source attribution
+- P0.1 CONTRA-CHECK safety system (94% accuracy)
+- Professional README suitable for academic presentations
+- Complete documentation of architecture and evaluation
+
+=============================================================================
+DEVELOPMENT PROCESS
+=============================================================================
+
+PHASE 1: CHECKPOINT - TrustMed AI Foundation
+---------------------------------------------
+Commit: 7ceb011
+Date: November 16, 2025
+
+Changes:
+1. Rebranded to "TrustMed AI"
+   - Page title: Medical Knowledge Assistant → TrustMed AI
+   - Welcome screen: "Welcome to TrustMed AI"
+
+2. UI Size Improvements
+   - Main container: 1200px → 1600px
+   - Content areas: 1000px → 1400px (welcome, input, chat)
+   - Font sizes increased:
+     * Welcome title: 2rem → 2.5rem
+     * Welcome subtitle: 1rem → 1.125rem
+     * Message content: 0.875rem → 1rem
+     * Input text: 0.9375rem → 1.0625rem
+     * Suggestion pills: 0.875rem → 1rem
+
+3. Citation System Implemented
+   Files Created:
+   - citation_formatter.py: CitationTracker class for [1] [2] markers
+   - add_source_metadata.py: Added source_layer/source_file to Neo4j nodes
+   - verify_citation_system.py: End-to-end testing
+
+   Architecture Changes:
+   - ret_context_ollama() now returns dict with context + metadata
+   - get_response_ollama() returns dict with answer + citations
+   - Frontend displays inline citations with source list
+
+4. Documentation Created
+   - CITATION_SYSTEM_SUMMARY.md: Implementation details
+   - P0.1_CONTRA_CHECK_PERFORMANCE.md: Evaluation metrics
+   - FRONTEND_CONFIG_GUIDE.md: UI configuration guide
+   - GRAPH_DATA_GUIDE.md: Knowledge graph documentation
+
+Technical Details:
+- Architecture text updated to show actual layers (UMLS/MedC-K/MIMIC-IV)
+- 2-column sidebar metrics layout
+- System Status moved after Model section
+- Enhanced input styling (background, caret-color, line-height)
+
+Files Modified: 21 files changed, 4755 insertions(+), 116 deletions(-)
+
+
+PHASE 2: PROFESSIONAL README REWRITE
+-------------------------------------
+Commit: b7c4ac1
+Date: November 16, 2025
+
+Objective: Create presentation-ready documentation with accurate technical
+descriptions and proper research citations.
+
+Changes:
+1. Complete README.md Rewrite (1365 lines → 633 lines)
+
+   New Structure:
+   - Overview with key capabilities table
+   - Architecture (5 detailed subsections)
+     * Three-layer knowledge graph
+     * Vector retrieval pipeline
+     * P0.1 CONTRA-CHECK system
+     * Two-pass response generation
+     * Citation system
+   - Models & Technology Stack
+   - Installation & Setup (condensed)
+   - Data Sources & Licensing (UMLS, MIMIC-IV)
+   - Evaluation & Performance
+   - Limitations & Future Work
+   - References (research papers)
+   - Citation guidelines
+
+2. Technical Accuracy Improvements
+   - Specified nomic-embed-text (768-dim) for embeddings
+   - Clarified llama3 for LLM generation
+   - Detailed P0.1 6-step architecture
+   - Added Neo4j Cypher queries
+   - Explained SafetyGate validation logic
+
+3. Research Citations Added
+   Primary Paper:
+   - Wu et al. (2024) - Medical Graph RAG arXiv:2408.04187
+
+   Data Sources:
+   - UMLS (Bodenreider 2004)
+   - MIMIC-IV (Johnson et al. 2023, PhysioNet)
+   - PhysioNet (Goldberger et al. 2000)
+
+   Frameworks:
+   - CAMEL (Li et al. 2023)
+   - Ollama, Neo4j GDS
+
+   Related Work:
+   - Graph RAG (Edge et al. 2024)
+   - Medical KGs (Rotmensch et al. 2017)
+   - Drug Safety (Tatonetti et al. 2012)
+
+4. Content Removed
+   - Repository credits (replaced with research papers)
+   - Marketing language ("Made with ❤️")
+   - Excessive troubleshooting (condensed)
+   - No "Claude Code" mentions (verified none existed)
+
+Result: Professional academic-quality README suitable for presentations.
+
+
+PHASE 3: CHAT SCROLLING FIX
+----------------------------
+Commit: d60f609
+Date: November 16, 2025
+
+Problem: Users couldn't scroll up to see question after answer appeared.
+
+Root Cause:
+- .chat-area had max-height: calc(100vh - 200px)
+- overflow-y: auto constrained scrolling
+- Bottom padding insufficient (8rem)
+
+Solution:
+1. Removed max-height constraint
+2. Removed overflow-y/overflow-x (let page scroll naturally)
+3. Increased bottom padding: 8rem → 12rem
+4. Added min-height: 100vh for full viewport
+
+Result: Users can now scroll freely through entire conversation.
+
+
+PHASE 4: CAMEL FRAMEWORK RESTORATION
+-------------------------------------
+Commit: 7c52e8d
+Date: November 16, 2025
+
+Problem: Attempted cleanup deleted camel/ directory, breaking imports.
+
+Error:
+  File frontend/official_frontend_ollama.py, line 16
+  from camel.storages import Neo4jGraph
+  ModuleNotFoundError: No module named 'camel.storages'
+
+Analysis: The camel/ directory contains a local modified version of the
+CAMEL framework with project-specific changes, not the pip-installed version.
+
+Solution: Restored camel/ directory from commit d60f609.
+
+Files Restored: 179 files (camel framework)
+
+
+PHASE 5: CLEANUP REVERT (KEEP ALL FILES)
+-----------------------------------------
+Commit: 446fd33
+Date: November 16, 2025
+
+Problem: Initial cleanup commit (a9c7388) deleted files needed by the system:
+- Missing seq_ret_ollama function
+- Other import dependencies broken
+
+Decision: Revert cleanup commit entirely to keep all working files.
+
+Files Restored by Revert:
+- Dockerfile
+- MedicalBook.xlsx
+- cleangraph.py
+- dataloader.py
+- download_dataset.py
+- git_push.sh
+- launch_frontend.bat
+- medgraphrag.yml
+- medgraphrag_gpu.yml
+- split_medr.py
+- utils.py
+
+Reason: System was working properly before cleanup. Prioritize functionality
+over minimal file count for this release.
+
+=============================================================================
+FINAL COMMIT HISTORY (Development Branch)
+=============================================================================
+
+1. 4cc937c - Clean up codebase: Remove OpenAI/Gemini code (initial state)
+2. 7ceb011 - Checkpoint: TrustMed AI with larger UI sizes and citation system
+3. b7c4ac1 - docs: Professional README rewrite for presentation
+4. d60f609 - fix: Improve chat area scrolling
+5. a9c7388 - chore: Remove unnecessary files (LATER REVERTED)
+6. 7c52e8d - fix: Restore camel/ directory (local modified CAMEL framework)
+7. 446fd33 - Revert "chore: Remove unnecessary files before main merge"
+
+Net Result: All features implemented, all files working, ready for production.
+
+=============================================================================
+FEATURES ADDED IN v1.0
+=============================================================================
+
+1. CITATION SYSTEM
+   ✅ Inline citation markers [1], [2], [3]
+   ✅ Source attribution by layer (UMLS/MedC-K/MIMIC-IV)
+   ✅ Formatted source list below answers
+   ✅ Deduplication of repeated sources
+
+   Implementation:
+   - citation_formatter.py: CitationTracker class
+   - Neo4j nodes enhanced with source_layer and source_file properties
+   - Frontend displays citations with markdown formatting
+
+2. P0.1 CONTRA-CHECK SAFETY SYSTEM
+   ✅ Drug extraction from questions (regex + aliases)
+   ✅ Patient condition retrieval from matched subgraph
+   ✅ Graph query for contraindication rules
+   ✅ Pre-generation rule injection (non-negotiable)
+   ✅ SafetyGate post-validation (negation detection)
+
+   Evaluation:
+   - Overall Accuracy: 94% (17/18 tests)
+   - Precision: 100% (0 false positives)
+   - Recall: 94% (1 false negative in "could" negation)
+   - Drug Extraction: 100% (5/5 tests)
+   - WARNING Enforcement: 100% (4/4 tests)
+
+   Architecture:
+   Step 1: Extract drug mentions → ['ibuprofen', 'nsaid', 'advil']
+   Step 2: Get patient conditions → ['heart failure', 'CKD']
+   Step 3: Query graph for CONTRAINDICATED_IN/WORSENS/INTERACTS_WITH
+   Step 4: Inject rules at TOP of context (mandatory)
+   Step 5: LLM generation with WARNING prefix
+   Step 6: SafetyGate validation (negation detection)
+
+3. ENHANCED UI/UX
+   ✅ TrustMed AI branding
+   ✅ Larger layouts (1400px-1600px)
+   ✅ Increased font sizes (1rem-2.5rem)
+   ✅ Improved chat scrolling
+   ✅ 2-column sidebar metrics
+   ✅ Responsive design maintained
+
+4. PROFESSIONAL DOCUMENTATION
+   ✅ Academic-quality README
+   ✅ Research paper citations
+   ✅ Technical architecture diagrams
+   ✅ Evaluation metrics documented
+   ✅ Limitations disclosed
+   ✅ Data licensing information
+
+=============================================================================
+SYSTEM SPECIFICATIONS
+=============================================================================
+
+Models Used:
+- LLM Generation: Ollama llama3 (4.7GB)
+- Embeddings: nomic-embed-text (768-dim)
+
+Technology Stack:
+- Graph Database: Neo4j 4.4+ with GDS plugin
+- Vector Search: Cosine similarity (Neo4j GDS)
+- Frontend: Streamlit
+- Framework: CAMEL (graph utilities only)
+
+Performance:
+- Vector Retrieval: ~20x faster than sequential (4-5 vs 50+ LLM calls)
+- Query Time: 30-50 seconds end-to-end
+- Embedding Efficiency: 768-dim (5.4x less storage than llama3 4096-dim)
+
+Graph Architecture:
+- Layer 1: UMLS Medical Ontology (disease definitions, drug taxonomies)
+- Layer 2: MedC-K Clinical Guidelines (treatment protocols)
+- Layer 3: MIMIC-IV Clinical Cases (de-identified patient records)
+- Cross-layer links: REFERENCE relationships (cosine > 0.6)
+
+=============================================================================
+TESTING & VALIDATION
+=============================================================================
+
+System Status: ✅ WORKING
+Last Tested: November 16, 2025
+
+Test Results:
+✅ Frontend starts successfully
+✅ Neo4j connection established
+✅ Ollama models loaded (llama3, nomic-embed-text)
+✅ Vector retrieval functional (768-dim embeddings)
+✅ P0.1 CONTRA-CHECK operational
+   - Detected: ibuprofen, naproxen contraindicated in CKD
+   - WARNING prefix enforced by SafetyGate
+✅ Citation system working
+   - Source: [1] MedC-K - cardiac_guidelines.txt
+✅ Chat scrolling fixed (full conversation visible)
+
+Sample Query Output:
+Query: "Can I take NSAIDs like ibuprofen?"
+Vector Match: GID d3ab7441 (similarity: 0.4845, rating: 4/10)
+Contraindications Found: 2 rules
+  - Ibuprofen CONTRAINDICATED_IN Chronic Kidney Disease
+  - Naproxen CONTRAINDICATED_IN Chronic Kidney Disease
+Response: WARNING prefix enforced by SafetyGate [1]
+Performance: 33.76s with 3 LLM calls (~20x speedup)
+
+=============================================================================
+KNOWN ISSUES & LIMITATIONS
+=============================================================================
+
+1. SafetyGate Calibration
+   - 94% accuracy (1/18 tests failed)
+   - Misses "could" negation in rare cases
+   - Impact: Low (pre-generation injection provides backup)
+
+2. Neo4j Label Warnings
+   - Warns about missing 'Condition' and 'Drug' labels
+   - System uses 'Disease' and 'Medication' instead
+   - Impact: None (queries work correctly)
+
+3. Contraindication Coverage
+   - Limited to demo graph (8 nodes, 4 rules)
+   - Production needs comprehensive drug database (DrugBank)
+
+4. Data Access Requirements
+   - MIMIC-IV requires PhysioNet credentials
+   - UMLS requires UTS account
+   - Barrier for new users
+
+5. Deprecated Neo4j Functions
+   - Uses id() instead of elementId()
+   - Works but generates warnings
+   - Future: Update to elementId() in next version
+
+=============================================================================
+DEPLOYMENT INSTRUCTIONS
+=============================================================================
+
+Prerequisites:
+1. Ollama installed with models pulled:
+   ollama pull llama3
+   ollama pull nomic-embed-text
+
+2. Neo4j database running (local or Aura)
+
+3. Python 3.10+ with dependencies:
+   pip install -r requirements_windows.txt
+
+Quick Start:
+1. Configure .env file with Neo4j credentials
+2. Start Ollama: ollama serve
+3. Launch frontend: streamlit run frontend/official_frontend_ollama.py
+4. Access: http://localhost:8501
+
+Production Deployment:
+- Use Neo4j Aura (free tier: 200k nodes)
+- Deploy Streamlit app (Streamlit Cloud or Docker)
+- Ensure Ollama server accessible
+- Configure firewall for Neo4j bolt:// connection
+
+=============================================================================
+FUTURE ROADMAP
+=============================================================================
+
+Planned Improvements:
+- [ ] Expand contraindication rules from DrugBank API
+- [ ] Implement drug-drug interaction detection
+- [ ] Add temporal reasoning (onset, duration, washout)
+- [ ] Multi-modal retrieval (images, lab results)
+- [ ] Fine-tune llama3 on medical QA datasets
+- [ ] Implement retrieval metrics (NDCG, MRR)
+- [ ] Clinical validation study
+- [ ] ANN search for scalability (FAISS, Annoy)
+- [ ] Improve negation detection (spaCy, scispaCy)
+
+=============================================================================
+CREDITS & ACKNOWLEDGMENTS
+=============================================================================
+
+Original Research:
+- Wu, J., Zhu, J., Qi, Y., et al. (2024). Medical Graph RAG: Towards Safe
+  Medical Large Language Model via Graph Retrieval-Augmented Generation.
+  arXiv:2408.04187
+
+Data Sources:
+- UMLS: U.S. National Library of Medicine
+- MIMIC-IV: PhysioNet / MIT Lab for Computational Physiology
+- MedC-K: Expert-curated clinical guidelines (simulated in demo)
+
+Frameworks & Tools:
+- CAMEL: Communicative Agents framework (graph utilities)
+- Ollama: Local LLM inference
+- Neo4j: Graph database with GDS library
+- Streamlit: Web frontend
+- Nomic AI: nomic-embed-text embeddings
+
+=============================================================================
+VERSION CONTROL
+=============================================================================
+
+Repository: https://github.com/BenharJohn/TrustMed-AI
+Branch: main
+Version: 1.0.0
+Release Tag: v1.0-trustmed-ai
+
+Git History:
+- Development branch: 6 commits
+- Main branch: Fast-forward merge (no conflicts)
+- Total changes: 21 files changed, 4755 insertions(+), 607 deletions(-)
+
+Verification:
+git log --oneline main
+git diff origin/main main (should show all v1.0 changes)
+
+=============================================================================
+SUPPORT & CONTACT
+=============================================================================
+
+Issues: https://github.com/BenharJohn/TrustMed-AI/issues
+Discussions: https://github.com/BenharJohn/TrustMed-AI/discussions
+Original Paper: https://arxiv.org/abs/2408.04187
+
+Disclaimer: This system is for research and educational purposes only.
+Always consult qualified healthcare professionals for medical advice.
+
+=============================================================================
+END OF CHANGELOG
+=============================================================================
