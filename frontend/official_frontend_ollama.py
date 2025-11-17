@@ -502,10 +502,8 @@ st.markdown("""
         width: 100%;
         padding: 0 1rem;
         margin: 0 auto;
-        padding: 2rem 1rem 8rem 1rem;
-        max-height: calc(100vh - 200px);
-        overflow-y: auto;
-        overflow-x: hidden;
+        padding: 2rem 1rem 12rem 1rem;
+        min-height: 100vh;
     }
 
     /* Message bubbles */
