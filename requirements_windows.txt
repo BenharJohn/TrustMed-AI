@@ -1,14 +1,20 @@
 # Core dependencies for Medical Graph RAG on Windows (Ollama-only)
 # Install with: pip install -r requirements_windows.txt
+# IMPORTANT: Use with Anaconda Python 3.12+ for full compatibility
 
 # Graph and Vector Databases
-neo4j==5.23.1
-faiss-cpu==1.8.0
+neo4j>=5.23.1
+# Note: faiss-cpu 1.8.0 not available for Python 3.7, using latest compatible version
+faiss-cpu>=1.7.4
+
+# LLM API Dependencies (required by CAMEL framework)
+openai>=1.0.0  # CAMEL library requires OpenAI 1.0+ for type imports
+anthropic>=0.70.0  # Required by CAMEL token counting utilities
 
 # Frontend
 streamlit>=1.31.0
 
-# Ollama Integration (no OpenAI/Gemini dependencies needed)
+# Ollama Integration (no OpenAI API key needed for generation)
 
 # ML/DL Libraries (PyTorch installed separately)
 numpy==1.26.4

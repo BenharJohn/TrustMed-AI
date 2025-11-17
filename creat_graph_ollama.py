@@ -26,15 +26,15 @@ def call_ollama(prompt, model="llama3"):
     else:
         raise Exception(f"Ollama API error: {response.status_code}")
 
-def get_ollama_embedding(text, model="llama3"):
-    """Get embedding from Ollama"""
+def get_ollama_embedding(text, model="nomic-embed-text"):
+    """Get embedding from Ollama using nomic-embed-text (proper embedding model)"""
     response = requests.post(
         "http://localhost:11434/api/embeddings",
         json={
-            "model": model,
-            "prompt": text[:1000]  # Limit text length for embedding
+            "model": model,  # Use nomic-embed-text for fast, proper embeddings
+            "prompt": text[:2000]  # Nomic supports longer text
         },
-        timeout=60
+        timeout=30  # Nomic is much faster than llama3
     )
 
     if response.status_code == 200:
@@ -92,6 +92,9 @@ Extract:
 1. Medical entities (diseases, symptoms, medications, procedures, body parts, measurements)
 2. Relationships between entities
 
+CRITICAL: If the text mentions drug contraindications, conditions that worsen with medications,
+or drug interactions, use CONTRAINDICATED_IN, WORSENS, or INTERACTS_WITH relationships.
+
 Format your response EXACTLY as:
 
 ENTITIES:
@@ -103,8 +106,11 @@ RELATIONSHIPS:
 - Entity1 CAUSES Entity2
 - Entity2 TREATS Entity3
 - Entity4 HAS_SYMPTOM Entity5
+- Medication1 CONTRAINDICATED_IN Disease1
+- Medication2 WORSENS Condition1
 
-Use relationship types: CAUSES, TREATS, HAS_SYMPTOM, REQUIRES, INDICATES, ASSOCIATED_WITH, PART_OF
+Use relationship types: CAUSES, TREATS, HAS_SYMPTOM, CONTRAINDICATED_IN, WORSENS,
+INTERACTS_WITH, RECOMMENDS, REQUIRES, INDICATES, ASSOCIATED_WITH, PART_OF
 
 Extract now:"""
 

@@ -109,7 +109,7 @@ st.markdown("""
     /* Remove default padding */
     .main .block-container {
         padding: 0;
-        max-width: min(90%, 1600px) !important;
+        max-width: min(95%, 1600px) !important;
         width: 100%;
         min-height: 100vh;
         display: flex;
@@ -159,61 +159,24 @@ st.markdown("""
 
     [data-testid="stSidebar"] > div:first-child {
         background-color: white;
-        padding-top: 1rem !important;
+        padding-top: 0.5rem !important;
     }
 
     /* Remove extra padding from sidebar content */
     [data-testid="stSidebar"] .block-container {
-        padding-top: 1rem !important;
+        padding-top: 0.5rem !important;
     }
 
-    /* Remove all top spacing from sidebar elements */
-    [data-testid="stSidebar"] .element-container {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
+    /* Remove top margin from first sidebar element */
     [data-testid="stSidebar"] .element-container:first-child {
         margin-top: 0 !important;
         padding-top: 0 !important;
     }
 
     /* Remove spacing from sidebar markdown elements */
-    [data-testid="stSidebar"] .stMarkdown {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
     [data-testid="stSidebar"] .stMarkdown:first-child {
         margin-top: 0 !important;
         padding-top: 0 !important;
-    }
-
-    /* Remove spacing from sidebar headings */
-    [data-testid="stSidebar"] h1,
-    [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    /* Nuclear option - remove ALL possible top spacing in sidebar */
-    [data-testid="stSidebar"] * {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:first-child,
-    [data-testid="stSidebar"] [data-testid="stVerticalBlock"]:first-child * {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-
-    /* Target the specific first markdown heading */
-    [data-testid="stSidebar"] h3:first-of-type {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-        margin-block-start: 0 !important;
     }
 
     /* Hide the collapse button to prevent hiding sidebar */
@@ -233,17 +196,6 @@ st.markdown("""
         color: var(--text-primary) !important;
     }
 
-    /* Center text in status boxes */
-    [data-testid="stSidebar"] .stSuccess,
-    [data-testid="stSidebar"] .stError {
-        text-align: center !important;
-    }
-
-    [data-testid="stSidebar"] .stSuccess > div,
-    [data-testid="stSidebar"] .stError > div {
-        text-align: center !important;
-    }
-
     [data-testid="stSidebar"] .stMarkdown {
         color: var(--text-primary) !important;
     }
@@ -255,31 +207,6 @@ st.markdown("""
     [data-testid="stSidebar"] .stMetric label,
     [data-testid="stSidebar"] .stMetric [data-testid="stMetricValue"] {
         color: var(--text-primary) !important;
-    }
-
-    /* Enable 2-column grid layout in sidebar */
-    [data-testid="stSidebar"] [data-testid="stHorizontalBlock"] {
-        gap: 0.5rem !important;
-    }
-
-    [data-testid="stSidebar"] [data-testid="column"] {
-        flex: 1 1 0 !important;
-        min-width: 0 !important;
-        padding: 0 0.25rem !important;
-    }
-
-    /* Compact metrics in sidebar for 2-column layout */
-    [data-testid="stSidebar"] .stMetric {
-        padding: 0.5rem 0.25rem !important;
-    }
-
-    [data-testid="stSidebar"] .stMetric label {
-        font-size: 0.7rem !important;
-        margin-bottom: 0.25rem !important;
-    }
-
-    [data-testid="stSidebar"] .stMetric [data-testid="stMetricValue"] {
-        font-size: 1.2rem !important;
     }
 
     /* Fix selectbox (dropdown) text visibility */
@@ -343,13 +270,13 @@ st.markdown("""
         left: 50%;
         transform: translate(-50%, -50%);
         width: 100%;
-        max-width: min(90%, 1400px);
+        max-width: min(95%, 1400px);
         text-align: center;
         padding: 0 1rem;
     }
 
     .welcome-title {
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 500;
         color: var(--text-primary);
         margin-bottom: 0.75rem;
@@ -357,7 +284,7 @@ st.markdown("""
     }
 
     .welcome-subtitle {
-        font-size: 1.125rem;
+        font-size: 1rem;
         font-weight: 400;
         color: var(--text-secondary);
         margin-bottom: 3rem;
@@ -378,7 +305,7 @@ st.markdown("""
         border: none;
         border-radius: 20px;
         padding: 0.65rem 1.25rem;
-        font-size: 1rem;
+        font-size: 0.875rem;
         font-weight: 400;
         color: var(--text-primary);
         cursor: pointer;
@@ -397,7 +324,7 @@ st.markdown("""
         bottom: 2rem;
         left: 50%;
         transform: translateX(-50%);
-        width: min(90%, 1400px) !important;
+        width: min(95%, 1400px) !important;
         max-width: 1400px !important;
         z-index: 1000;
         padding: 0 1rem;
@@ -411,25 +338,6 @@ st.markdown("""
         display: flex;
         align-items: center;
         gap: 0.75rem;
-    }
-
-    /* Align input and button on same line */
-    .input-wrapper [data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.75rem !important;
-    }
-
-    .input-wrapper [data-testid="column"] {
-        display: flex !important;
-        align-items: center !important;
-    }
-
-    /* Make button column narrow and aligned */
-    .input-wrapper [data-testid="column"]:last-child {
-        flex: 0 0 auto !important;
-        min-width: 40px !important;
-        max-width: 40px !important;
     }
 
     /* Hide Streamlit input styling */
@@ -449,7 +357,7 @@ st.markdown("""
         border-radius: 20px !important;
         background: rgba(255, 255, 255, 0.95) !important;
         padding: 0.5rem 1rem !important;
-        font-size: 1.0625rem !important;
+        font-size: 0.9375rem !important;
         color: var(--text-primary) !important;
         caret-color: #333 !important;
         line-height: 1.5 !important;
@@ -498,7 +406,7 @@ st.markdown("""
 
     /* Chat container */
     .chat-area {
-        max-width: min(90%, 1400px) !important;
+        max-width: min(95%, 1400px) !important;
         width: 100%;
         padding: 0 1rem;
         margin: 0 auto;
@@ -533,7 +441,7 @@ st.markdown("""
         max-width: 75%;
         padding: 0.75rem 1rem;
         border-radius: 16px;
-        font-size: 1rem;
+        font-size: 0.875rem;
         line-height: 1.4;
     }
 
@@ -786,20 +694,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # System status - MOVED HERE after Model
-    st.markdown("### System Status")
-    if n4j:
-        st.success("Neo4j: Connected")
-    else:
-        st.error("Neo4j: Disconnected")
-
-    if ollama_available:
-        st.success("Ollama: Running")
-    else:
-        st.error("Ollama: Not running")
-
-    st.markdown("---")
-
     # Advanced settings (collapsible)
     with st.expander("Advanced Settings", expanded=False):
         temperature = st.slider("Temperature", 0.0, 1.0, 0.7, 0.05)
@@ -812,21 +706,26 @@ with st.sidebar:
     if n4j:
         stats = get_graph_stats(n4j)
         if stats:
-            # First row
-            col1, col2 = st.columns(2)
-            with col1:
-                st.metric("Entities", stats.get('entities', 0))
-            with col2:
-                st.metric("Summaries", stats.get('summaries', 0))
-
-            # Second row
-            col3, col4 = st.columns(2)
-            with col3:
-                st.metric("Relationships", stats.get('relationships', 0))
-            with col4:
-                st.metric("Cross-layer Links", stats.get('references', 0))
+            st.metric("Entities", stats.get('entities', 0))
+            st.metric("Summaries", stats.get('summaries', 0))
+            st.metric("Relationships", stats.get('relationships', 0))
+            st.metric("Cross-layer Links", stats.get('references', 0))
     else:
         st.warning("Not connected to Neo4j")
+
+    st.markdown("---")
+
+    # System status
+    st.markdown("### System Status")
+    if n4j:
+        st.success("Neo4j: Connected")
+    else:
+        st.error("Neo4j: Disconnected")
+
+    if ollama_available:
+        st.success("Ollama: Running")
+    else:
+        st.error("Ollama: Not running")
 
 # Main content area
 if len(st.session_state.messages) == 0:
@@ -864,7 +763,7 @@ else:
                 <div class="graph-info-title">Knowledge Graph Source</div>
                 <div class="graph-info-item"><span class="icon">Graph ID:</span> {message.get("gid", "Unknown")}</div>
                 <div class="graph-info-item"><span class="icon">Retrieved from:</span> Three-layer medical knowledge graph</div>
-                <div class="graph-info-item"><span class="icon">Architecture:</span> Medical Ontology (UMLS) + Expert Summaries (MedC-K) + Clinical Cases (MIMIC-IV)</div>
+                <div class="graph-info-item"><span class="icon">Architecture:</span> Official research paper implementation</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -873,9 +772,12 @@ else:
 # Fixed bottom input - LittleAIBox style
 st.markdown('<div class="input-wrapper"><div class="input-box">', unsafe_allow_html=True)
 
-col1, col2 = st.columns([9, 0.6])
+col1, col2, col3 = st.columns([0.5, 8, 0.5])
 
 with col1:
+    st.markdown('<span style="font-size: 1.25rem; color: #999;">+</span>', unsafe_allow_html=True)
+
+with col2:
     user_input = st.text_input(
         "input",
         placeholder="Ask any question",
@@ -883,7 +785,7 @@ with col1:
         key="user_input"
     )
 
-with col2:
+with col3:
     send_button = st.button("➤", key="send_btn")
 
 st.markdown('</div></div>', unsafe_allow_html=True)
@@ -931,24 +833,17 @@ if send_button and user_input:
 
                 # Stage 6: Generating answer with graph context
                 status_placeholder.markdown('<div class="processing-status">Generating answer using graph context (2-pass approach)...</div>', unsafe_allow_html=True)
-                response_data = get_response_ollama(n4j, gid, user_input, model)
-
-                # Extract answer and citations
-                answer = response_data['answer']
-                citations = response_data['citations']
-
-                # Combine answer with citations
-                full_response = answer + citations
+                answer = get_response_ollama(n4j, gid, user_input, model)
 
                 # Add assistant message with graph info
                 st.session_state.messages.append({
                     "role": "assistant",
-                    "content": full_response,
+                    "content": answer,
                     "timestamp": datetime.now().strftime("%H:%M"),
                     "gid": gid,
                     "graph_info": {
                         "matched": True,
-                        "layers_used": "Medical Ontology (UMLS) + Expert Summaries (MedC-K) + Clinical Cases (MIMIC-IV)"
+                        "layers_used": "Three-layer architecture (UMLS→MedC-K→MIMIC-IV)"
                     }
                 })
 
@@ -964,10 +859,9 @@ if send_button and user_input:
 
             # Better error messages
             error_msg = str(e)
-            # Check for Ollama-specific errors first (port 11434 = Ollama)
-            if "11434" in error_msg or "Ollama" in error_msg or "500" in error_msg:
+            if "Ollama" in error_msg or "500" in error_msg:
                 st.error(f"Ollama Error: {error_msg}\n\nTry: Restart Ollama or check if llama3 model is loaded")
-            elif "Neo4j" in error_msg or "7687" in error_msg or "bolt://" in error_msg:
+            elif "Neo4j" in error_msg or "connection" in error_msg.lower():
                 st.error(f"Neo4j Connection Error: {error_msg}\n\nCheck if Neo4j is running")
             else:
                 st.error(f"Error: {error_msg}")

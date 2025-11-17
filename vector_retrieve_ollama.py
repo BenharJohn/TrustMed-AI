@@ -6,23 +6,35 @@ Replaces sequential LLM comparison with fast vector search
 from creat_graph_ollama import get_ollama_embedding, call_ollama
 import time
 
-def ensure_summary_embeddings(n4j, model="llama3"):
+def ensure_summary_embeddings(n4j, model="nomic-embed-text"):
     """
-    Check if Summary nodes have embeddings, generate if missing
+    Check if Summary nodes have embeddings, generate if missing or wrong dimension
 
     Args:
         n4j: Neo4jGraph instance
-        model: Ollama model for embeddings
+        model: Ollama embedding model (nomic-embed-text = 768 dim)
 
     Returns:
         bool: True if embeddings exist or were successfully generated
     """
     print("[Vector Setup] Checking for Summary node embeddings...")
 
+    # IMPORTANT: Clear old 4096-dim llama3 embeddings and regenerate with nomic-embed-text
+    clear_old_query = """
+    MATCH (s:Summary)
+    WHERE s.embedding IS NOT NULL AND size(s.embedding) <> 768
+    SET s.embedding = NULL
+    RETURN count(s) AS cleared_count
+    """
+
+    cleared = n4j.query(clear_old_query)
+    if cleared and cleared[0]['cleared_count'] > 0:
+        print(f"  [INFO] Cleared {cleared[0]['cleared_count']} old embeddings (wrong dimension)")
+
     # Check if embeddings exist
     check_query = """
     MATCH (s:Summary)
-    WHERE s.embedding IS NULL
+    WHERE s.embedding IS NULL OR size(s.embedding) <> 768
     RETURN count(s) AS missing_count
     """
 
@@ -78,10 +90,13 @@ def vector_ret_ollama(n4j, question, model="llama3", top_k=3):
     Vector-based retrieval using cosine similarity
     Replaces seq_ret_ollama with much faster embedding comparison
 
+    NOTE: model parameter is for LLM re-ranking only.
+    Embeddings always use nomic-embed-text for speed and proper vector search.
+
     Args:
         n4j: Neo4jGraph instance
         question: User's question
-        model: Ollama model name
+        model: Ollama LLM model name (for re-ranking only)
         top_k: Number of top candidates to retrieve
 
     Returns:
@@ -91,17 +106,17 @@ def vector_ret_ollama(n4j, question, model="llama3", top_k=3):
     print(f"\n[Vector Retrieval] Using embedding-based search...")
     start_time = time.time()
 
-    # Ensure Summary nodes have embeddings
-    if not ensure_summary_embeddings(n4j, model):
+    # Ensure Summary nodes have embeddings (using nomic-embed-text)
+    if not ensure_summary_embeddings(n4j, "nomic-embed-text"):
         print("  [ERROR] Could not ensure embeddings exist - falling back to first Summary")
         # Fallback: return first available GID
         fallback_query = "MATCH (s:Summary) RETURN s.gid AS gid LIMIT 1"
         result = n4j.query(fallback_query)
         return result[0]['gid'] if result else None
 
-    # Step 1: Generate question embedding (1 LLM call - fast!)
+    # Step 1: Generate question embedding (using nomic-embed-text - FAST!)
     print(f"\n[Step 1] Generating question embedding...")
-    question_embedding = get_ollama_embedding(question, model)
+    question_embedding = get_ollama_embedding(question, "nomic-embed-text")
 
     if not question_embedding:
         print("  [ERROR] Failed to generate question embedding")
